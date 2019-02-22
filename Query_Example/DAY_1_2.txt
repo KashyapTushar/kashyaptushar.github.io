@@ -1,0 +1,175 @@
+Demo for DAY 1:
+
+SQL Oerators:
+
+/***Arithmetic Operator********/
+
+/*****Additional Operator:****/
+select (20 + 30) from dual:
+output==> 50
+
+/*****Subtraction operator****/
+Select (30-20) from dual;
+output==>10
+
+
+/*****Multiplication Operator:****/
+
+Select 30*20 from dual;
+
+/*****Division Operator****/
+Select 30/20 from dual;
+
+
+/*****Modulous Operator****/
+Select Mod(30,20) from dual;
+ 
+
+ /******Logical Operators*******/
+
+Create table employee_details
+(
+	Employee_id Number
+	,Employee_Name Varchar(30)
+	,Salary1 Number
+	,Salary2 Number
+);
+
+Create table hr_records
+(
+	Employee_id Number
+	,Employee_Name Varchar(30)
+	,Age Number
+	,DOJ date
+);
+
+Insert into employee_details values (101,'Sam',2000,3000);
+Insert into employee_details values (102,'Aman',25000,2000);
+Insert into employee_details values (103,'Jon',2000,3000);
+Insert into employee_details values (104,'Tushar',200,300);
+Insert into employee_details values (105,'Kashyap',20,30);
+
+Insert into hr_records values (101,'Sam',21,'10-Jul-2015');
+Insert into hr_records values (102,'Aman',25,'01-Jan-2005');
+Insert into hr_records values (103,'Jon',26,'01-Dec-2005');
+Insert into hr_records values (104,'Tushar',26,'29-June-2015');
+Insert into hr_records values (105,'Kashyap',26,'29-June-2015');
+
+
+/***And Operator*****/
+
+Select * from employee_details where employee_id=101 and salary>2000;
+
+/****OR Operator******/
+
+select * from hr_records where (employee_id=102 or age=26);
+
+
+/*****Not Operator*****/
+ 
+ select * from employee_details where employee_id not in (101,102);
+ 
+ 
+
+/*****SET Operators*******/
+
+/****UNION OPERATOR*******/
+
+a) Simple Union
+Select Employee_id,employee_details.EMPLOYEE_NAME from employee_details where employee_id in (101,103)
+UNION
+Select Employee_id,EMPLOYEE_NAME from employee_details where employee_id in (101);
+
+
+b) If we select different no of Columns/different datatypes from two tables
+Select * from employee_details where employee_id in (101,103)
+UNION
+Select * from hr_records where employee_id in (101);
+
+c) If we select same data type columns from two different tables
+Select Salary1 from employee_details where employee_id in (105)
+UNION
+Select Age from hr_records where employee_id in (105,103);
+
+
+/***UNION ALL*******/
+Select Employee_id,employee_details.EMPLOYEE_NAME from employee_details where employee_id in (101,103)
+UNION ALL
+Select Employee_id,EMPLOYEE_NAME from employee_details where employee_id in (101);
+
+
+/***INTERSECT*****/
+
+Select employee_id from employee_details where employee_id in (101,103)
+INTERSECT
+Select employee_id from employee_details where employee_id in (101);
+
+
+/****MINUS******/
+
+Select employee_id from employee_details where employee_id in (101,103)
+MINUS
+Select employee_id from employee_details where employee_id in (101);
+
+/*****Comparision Operator****/
+
+Select * from employee_details where salary1>3000;
+Select * from employee_details where salary2<3000;
+Select * from employee_details where salary2<=3000;
+Select * from employee_details where salary1>=3000;
+Select * from employee_details where salary2=3000;
+Select * from employee_details where salary2<>3000;
+
+
+/****Group by****/
+Insert into employee_details values (101,'Sam',201,3500);/** inserting one more row for Emp_id 101**/
+
+Select employee_id, Min(salary1) from employee_details group by employee_id;
+Select employee_id,employee_name,Max(salary1) from employee_details group by employee_id,employee_name;
+
+b)NULLs values in a column  also being considered
+Insert into employee_details values ('','Dummy',20,30);/****Inserting Null values**/
+
+Select employee_id,employee_name,Max(salary1) from employee_details group by employee_id,employee_name;
+
+c) Aggregate function cannot be used in Where clause
+Select employee_id,employee_name from employee_details where Max(salary2)=3000;
+
+/*****Order by ******/
+
+ a) Lowest to Higest Salary1
+	Select * from employee_details order by salary1
+ b) Highest to Lowest Salry1
+	Select * from employee_details order by salary1 Desc
+ c)Nulls First and NUlls Last
+	Select * from employee_details order by employee_id  nulls first;
+	Select * from employee_details order by employee_id nulls last; 
+d) Important point in Order by Clause
+	Select * from employee_details order by employee_name;/***Selecting Employee tables from the table*****/
+
+	Update employee_details 
+	set employee_name = 'sam' where employee_id = 101 and salary1=201;/***Updating one of same Employee_name in employee_details table*****/
+
+	Select * from employee_details order by employee_name;/***Selecting Employee_details again by ordering employee_name *****/
+	
+
+
+Null has no Equivalent:
+Select * from employee_details where employee_id = NULL;	
+
+
+
+
+
+Drop table employee_details;
+Drop table hr_records;
+
+
+
+	alter session set NLS_SORT = 'BINARY_CI'/****Alter the session to Case Insensetive Sort Order*****/
+	
+	Select * from employee_details order by employee_name;/***Selecting Employee_details again by ordering employee_name *****/
+	
+	
+	Another approach could be to Cast the columns, but in that case Optiimizer will not be using teh standard index if created on those column. Onlty option then is to have function based index.
+
